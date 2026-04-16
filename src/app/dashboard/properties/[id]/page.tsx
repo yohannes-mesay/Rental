@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { properties, agreements } from "@/lib/dummy-data";
 import { formatCurrency, formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -19,6 +20,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function PropertyDetailPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const property = properties.find((p) => p.id === params.id);
 
@@ -39,7 +41,7 @@ export default function PropertyDetailPage() {
 
   return (
     <>
-      <Header title="Property Details" />
+        <Header title={t("properties", "propertyDetails")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/properties"

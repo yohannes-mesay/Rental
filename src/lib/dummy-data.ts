@@ -7,6 +7,11 @@ import {
   PricingStrategy,
   Notification,
   AnalyticsData,
+  RentPayment,
+  SupportingDocument,
+  AuditLog,
+  PenaltyNotice,
+  SystemParameter,
 } from './types';
 
 export const currentUser: User = {
@@ -82,7 +87,7 @@ export const users: User[] = [
     createdAt: '2025-01-05',
     isVerified: true,
     address: 'Arada Sub-City, Woreda 01',
-    idNumber: 'DARA-2025-001',
+    idNumber: 'AUTH-2025-001',
   },
   {
     id: 'u7',
@@ -681,6 +686,55 @@ export const notifications: Notification[] = [
     createdAt: '2025-06-01T07:00:00',
     link: '/dashboard/analytics',
   },
+];
+
+export const rentPayments: RentPayment[] = [
+  { id: 'pay1', agreementId: 'a1', propertyTitle: 'Modern 2BR Apartment in Bole', payerId: 'u3', payerName: 'Tigist Haile', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 15000, dueDate: '2025-06-01', paidDate: '2025-05-30', status: 'paid', method: 'cbe_birr', reference: 'CBE-20250530-001' },
+  { id: 'pay2', agreementId: 'a2', propertyTitle: 'Studio Condominium in Kirkos', payerId: 'u5', payerName: 'Sara Getachew', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 8000, dueDate: '2025-06-01', paidDate: '2025-06-01', status: 'paid', method: 'telebirr', reference: 'TB-20250601-042' },
+  { id: 'pay3', agreementId: 'a3', propertyTitle: '3BR House in Gullele', payerId: 'u9', payerName: 'Meron Tadesse', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 18000, dueDate: '2025-06-15', status: 'pending' },
+  { id: 'pay4', agreementId: 'a1', propertyTitle: 'Modern 2BR Apartment in Bole', payerId: 'u3', payerName: 'Tigist Haile', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 15000, dueDate: '2025-07-01', status: 'pending' },
+  { id: 'pay5', agreementId: 'a2', propertyTitle: 'Studio Condominium in Kirkos', payerId: 'u5', payerName: 'Sara Getachew', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 8000, dueDate: '2025-07-01', status: 'overdue' },
+  { id: 'pay6', agreementId: 'a1', propertyTitle: 'Modern 2BR Apartment in Bole', payerId: 'u3', payerName: 'Tigist Haile', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 15000, dueDate: '2025-05-01', paidDate: '2025-05-01', status: 'paid', method: 'telebirr', reference: 'TB-20250501-007' },
+  { id: 'pay7', agreementId: 'a3', propertyTitle: '3BR House in Gullele', payerId: 'u9', payerName: 'Meron Tadesse', recipientId: 'u2', recipientName: 'Abebe Kebede', amount: 18000, dueDate: '2025-05-15', paidDate: '2025-05-14', status: 'paid', method: 'cbe_birr', reference: 'CBE-20250514-003' },
+];
+
+export const supportingDocuments: SupportingDocument[] = [
+  { id: 'doc1', uploaderId: 'u3', uploaderName: 'Tigist Haile', relatedEntityType: 'agreement', relatedEntityId: 'a1', relatedEntityTitle: 'Modern 2BR Apartment in Bole', fileName: 'kebele_id_front.pdf', fileType: 'pdf', fileSize: 245000, uploadedAt: '2025-02-20', description: 'Kebele ID front side' },
+  { id: 'doc2', uploaderId: 'u3', uploaderName: 'Tigist Haile', relatedEntityType: 'dispute', relatedEntityId: 'd1', relatedEntityTitle: 'Unauthorized rent increase demand', fileName: 'text_messages_proof.pdf', fileType: 'pdf', fileSize: 512000, uploadedAt: '2025-06-01', description: 'Screenshots of threatening messages' },
+  { id: 'doc3', uploaderId: 'u2', uploaderName: 'Abebe Kebede', relatedEntityType: 'property', relatedEntityId: 'p1', relatedEntityTitle: 'Modern 2BR Apartment in Bole', fileName: 'ownership_certificate.pdf', fileType: 'pdf', fileSize: 1024000, uploadedAt: '2025-02-15', description: 'Property ownership certificate' },
+  { id: 'doc4', uploaderId: 'u5', uploaderName: 'Sara Getachew', relatedEntityType: 'dispute', relatedEntityId: 'd2', relatedEntityTitle: 'Broken water heater not repaired', fileName: 'photos_damage.zip', fileType: 'zip', fileSize: 3450000, uploadedAt: '2025-06-10', description: 'Photos of broken water heater' },
+  { id: 'doc5', uploaderId: 'u2', uploaderName: 'Abebe Kebede', relatedEntityType: 'rent_adjustment', relatedEntityId: 'ra1', relatedEntityTitle: 'Rent adjustment for Bole apartment', fileName: 'maintenance_receipts.pdf', fileType: 'pdf', fileSize: 780000, uploadedAt: '2025-06-01', description: 'Maintenance cost receipts' },
+  { id: 'doc6', uploaderId: 'u4', uploaderName: 'Dawit Tadesse', relatedEntityType: 'property', relatedEntityId: 'p2', relatedEntityTitle: 'Spacious 3BR House in Yeka', fileName: 'house_title_deed.pdf', fileType: 'pdf', fileSize: 920000, uploadedAt: '2025-03-10', description: 'Title deed for Yeka house' },
+];
+
+export const auditLogs: AuditLog[] = [
+  { id: 'al1', userId: 'u1', userName: 'Yohannes Mesay', userRole: 'admin', action: 'UPDATE', entity: 'User', entityId: 'u7', details: 'Verified user account for Helen Worku', ipAddress: '192.168.1.10', timestamp: '2025-06-12T14:30:00' },
+  { id: 'al2', userId: 'u6', userName: 'Mulugeta Assefa', userRole: 'dara_agent', action: 'APPROVE', entity: 'Agreement', entityId: 'a1', details: 'Verified tenancy agreement for Bole apartment', ipAddress: '10.0.0.45', timestamp: '2025-02-28T09:15:00' },
+  { id: 'al3', userId: 'u1', userName: 'Yohannes Mesay', userRole: 'admin', action: 'REJECT', entity: 'RentAdjustment', entityId: 'ra3', details: 'Rejected rent adjustment - exceeds 7% annual limit', ipAddress: '192.168.1.10', timestamp: '2025-05-12T11:00:00' },
+  { id: 'al4', userId: 'u10', userName: 'Kidist Alemu', userRole: 'admin', action: 'CREATE', entity: 'PricingStrategy', entityId: 'ps1', details: 'Published 2025 pricing strategy framework', ipAddress: '10.0.0.20', timestamp: '2024-12-28T08:00:00' },
+  { id: 'al5', userId: 'u2', userName: 'Abebe Kebede', userRole: 'landlord', action: 'CREATE', entity: 'Property', entityId: 'p1', details: 'Registered new property in Bole', ipAddress: '172.16.0.5', timestamp: '2025-02-15T10:00:00' },
+  { id: 'al6', userId: 'u3', userName: 'Tigist Haile', userRole: 'tenant', action: 'CREATE', entity: 'Dispute', entityId: 'd1', details: 'Filed complaint for unauthorized rent increase', ipAddress: '172.16.0.12', timestamp: '2025-06-01T10:30:00' },
+  { id: 'al7', userId: 'u1', userName: 'Yohannes Mesay', userRole: 'admin', action: 'UPDATE', entity: 'SystemParameter', entityId: 'sp1', details: 'Updated max advance payment months from 3 to 2', ipAddress: '192.168.1.10', timestamp: '2025-01-15T16:00:00' },
+  { id: 'al8', userId: 'u6', userName: 'Mulugeta Assefa', userRole: 'dara_agent', action: 'APPROVE', entity: 'Property', entityId: 'p4', details: 'Verified property ownership documents', ipAddress: '10.0.0.45', timestamp: '2025-04-10T13:45:00' },
+];
+
+export const penaltyNotices: PenaltyNotice[] = [
+  { id: 'pn1', issuedTo: 'u2', issuedToName: 'Abebe Kebede', issuedBy: 'u6', issuedByName: 'Mulugeta Assefa', disputeId: 'd1', type: 'warning', reason: 'Unauthorized rent increase demand on tenant Tigist Haile. First formal warning issued.', status: 'issued', issuedAt: '2025-06-05' },
+  { id: 'pn2', issuedTo: 'u2', issuedToName: 'Abebe Kebede', issuedBy: 'u6', issuedByName: 'Mulugeta Assefa', disputeId: 'd3', type: 'fine', reason: 'Attempted wrongful eviction of tenant Meron Tadesse. Fine imposed as per proclamation.', amount: 25000, status: 'acknowledged', issuedAt: '2025-06-08', deadline: '2025-07-08' },
+  { id: 'pn3', issuedTo: 'u2', issuedToName: 'Abebe Kebede', issuedBy: 'u1', issuedByName: 'Yohannes Mesay', disputeId: 'd5', type: 'legal_action', reason: 'Repeated deposit withholding complaints. Case referred for legal proceedings.', status: 'enforced', issuedAt: '2025-06-12' },
+  { id: 'pn4', issuedTo: 'u3', issuedToName: 'Tigist Haile', issuedBy: 'u6', issuedByName: 'Mulugeta Assefa', disputeId: 'd4', agreementId: 'a1', type: 'warning', reason: 'Subletting without landlord permission. Formal warning issued.', status: 'acknowledged', issuedAt: '2025-05-10' },
+];
+
+export const systemParameters: SystemParameter[] = [
+  { id: 'sp1', key: 'max_advance_months', label: 'Maximum Advance Payment (Months)', value: '2', category: 'rental', description: 'Maximum number of months a landlord can collect as advance payment', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp2', key: 'min_lease_years', label: 'Minimum Lease Duration (Years)', value: '2', category: 'rental', description: 'Minimum lease duration in years as per the proclamation', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp3', key: 'max_annual_increase', label: 'Maximum Annual Rent Increase (%)', value: '7', category: 'rental', description: 'Maximum percentage a landlord can increase rent annually', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp4', key: 'dispute_review_days', label: 'Dispute Review Period (Days)', value: '30', category: 'compliance', description: 'Maximum days allowed for initial dispute review', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp5', key: 'eviction_notice_days', label: 'Eviction Notice Period (Days)', value: '90', category: 'compliance', description: 'Minimum days of notice required before eviction', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp6', key: 'verification_sla_days', label: 'Verification SLA (Days)', value: '5', category: 'system', description: 'Target days for completing property/agreement verification', updatedAt: '2025-03-01', updatedBy: 'u1' },
+  { id: 'sp7', key: 'session_timeout_mins', label: 'Session Timeout (Minutes)', value: '30', category: 'system', description: 'User session timeout duration in minutes', updatedAt: '2025-01-15', updatedBy: 'u1' },
+  { id: 'sp8', key: 'payment_reminder_days', label: 'Payment Reminder (Days Before)', value: '5', category: 'notification', description: 'Days before due date to send payment reminder', updatedAt: '2025-02-10', updatedBy: 'u1' },
+  { id: 'sp9', key: 'agreement_expiry_alert_days', label: 'Agreement Expiry Alert (Days)', value: '60', category: 'notification', description: 'Days before agreement expiry to send alert', updatedAt: '2025-02-10', updatedBy: 'u1' },
 ];
 
 export const analyticsData: AnalyticsData = {

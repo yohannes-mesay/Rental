@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { agreements } from "@/lib/dummy-data";
 import { formatCurrency, formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -19,6 +21,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function AgreementDetailPage() {
+  const { t } = useLanguage();
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
   const params = useParams();
   const agreement = agreements.find((a) => a.id === params.id);
 
@@ -62,7 +67,7 @@ export default function AgreementDetailPage() {
 
   return (
     <>
-      <Header title="Agreement Details" />
+        <Header title={t("agreements", "agreementDetails")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/agreements"
@@ -278,33 +283,50 @@ export default function AgreementDetailPage() {
               </Link>
             </div>
 
-            {/* Actions */}
-            {agreement.status === "active" && (
+            {/* Tenant & Landlord: Extension / Termination */}
+            {agreement.status === "active" && (role === "tenant" || role === "landlord") && (
               <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-3">
                 <h3 className="text-sm font-semibold text-slate-900">
-                  Actions
+                  {t("common", "actions")}
                 </h3>
                 <button className="w-full px-4 py-2.5 text-sm font-medium text-primary-600 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors">
-                  Request Extension
+                  {t("agreements", "requestExtension")}
                 </button>
                 <button className="w-full px-4 py-2.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                  Request Termination
+                  {t("agreements", "requestTermination")}
                 </button>
               </div>
             )}
 
+            {/* Authorities only: Approve / Reject */}
             {(agreement.status === "pending_verification" ||
-              agreement.status === "pending_dara_verification") && (
+              agreement.status === "pending_dara_verification") &&
+              role === "dara_agent" && (
               <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-3">
                 <h3 className="text-sm font-semibold text-slate-900">
-                  Verification Actions
+                  {t("agreements", "verificationActions")}
                 </h3>
                 <button className="w-full px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
-                  Approve Agreement
+                  {t("agreements", "approveAgreement")}
                 </button>
                 <button className="w-full px-4 py-2.5 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                  Reject Agreement
+                  {t("agreements", "rejectAgreement")}
                 </button>
+              </div>
+            )}
+
+            {/* Pending status info for tenant/landlord */}
+            {(agreement.status === "pending_verification" ||
+              agreement.status === "pending_dara_verification") &&
+              (role === "tenant" || role === "landlord") && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                <div className="flex items-start gap-3">
+                  <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">{formatStatus(agreement.status)}</p>
+                    <p className="text-xs text-amber-600 mt-1">This agreement is awaiting review and approval by the Authorities.</p>
+                  </div>
+                </div>
               </div>
             )}
 

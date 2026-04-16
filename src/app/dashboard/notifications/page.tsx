@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { notifications } from "@/lib/dummy-data";
 import { cn } from "@/lib/utils";
 import {
@@ -15,6 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function NotificationsPage() {
+  const { t } = useLanguage();
   const [items, setItems] = useState(notifications);
   const [filter, setFilter] = useState<"all" | "unread">("all");
 
@@ -56,7 +58,7 @@ export default function NotificationsPage() {
 
   return (
     <>
-      <Header title="Notifications" />
+      <Header title={t("notificationsPage", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-3xl mx-auto">
           {/* Actions */}

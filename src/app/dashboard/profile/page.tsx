@@ -1,8 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
-import { currentUser } from "@/lib/dummy-data";
-import { ROLE_LABELS } from "@/lib/constants";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { getInitials, formatDate } from "@/lib/utils";
 import {
   User,
@@ -16,9 +16,12 @@ import {
 } from "lucide-react";
 
 export default function ProfilePage() {
+  const { t } = useLanguage();
+  const { user: currentUser } = useAuth();
+  if (!currentUser) return null;
   return (
     <>
-      <Header title="Profile" />
+      <Header title={t("profilePage", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-3xl">
           {/* Profile Header */}
@@ -34,7 +37,7 @@ export default function ProfilePage() {
                   {currentUser.firstName} {currentUser.lastName}
                 </h2>
                 <p className="text-sm text-slate-500">
-                  {ROLE_LABELS[currentUser.role] || currentUser.role}
+                  {t("roles", currentUser.role)}
                 </p>
                 <div className="flex items-center gap-4 mt-2">
                   <span className="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
@@ -137,7 +140,7 @@ export default function ProfilePage() {
                 </label>
                 <input
                   type="text"
-                  value={ROLE_LABELS[currentUser.role] || currentUser.role}
+                  value={t("roles", currentUser.role)}
                   disabled
                   className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-500"
                 />

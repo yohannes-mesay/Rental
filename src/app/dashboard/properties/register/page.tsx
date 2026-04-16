@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { SUB_CITIES, PROPERTY_TYPES, AMENITIES } from "@/lib/constants";
 import { ArrowLeft, Upload, Plus } from "lucide-react";
 import Link from "next/link";
@@ -8,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function RegisterPropertyPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
@@ -24,7 +26,7 @@ export default function RegisterPropertyPage() {
 
   return (
     <>
-      <Header title="Register Property" />
+      <Header title={t("properties", "registerProperty")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/properties"
@@ -40,7 +42,7 @@ export default function RegisterPropertyPage() {
               Register New Property
             </h2>
             <p className="text-sm text-slate-500 mb-6">
-              Provide property details for registration and verification by DARA.
+              Provide property details for registration and verification by Authorities.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -210,7 +212,7 @@ export default function RegisterPropertyPage() {
                 <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center">
                   <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
                   <p className="text-sm text-slate-600 mb-1">
-                    Upload ownership documents for DARA verification
+                    Upload ownership documents for Authorities verification
                   </p>
                   <p className="text-xs text-slate-400">
                     PDF, JPG, PNG up to 10MB each

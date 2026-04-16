@@ -1,8 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { users } from "@/lib/dummy-data";
-import { ROLE_LABELS } from "@/lib/constants";
 import { formatDate, getInitials } from "@/lib/utils";
 import {
   Search,
@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 
 export default function UserManagementPage() {
+  const { t } = useLanguage();
   const [roleFilter, setRoleFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -49,7 +50,7 @@ export default function UserManagementPage() {
 
   return (
     <>
-      <Header title="User Management" />
+      <Header title={t("admin", "userManagement")} />
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Summary */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
@@ -63,7 +64,7 @@ export default function UserManagementPage() {
                   {users.filter((u) => u.role === role).length}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {ROLE_LABELS[role] || role}
+                  {t("roles", role)}
                 </p>
               </div>
             )
@@ -93,7 +94,7 @@ export default function UserManagementPage() {
               <option value="tenant">Tenants</option>
               <option value="landlord">Landlords</option>
               <option value="admin">Admins</option>
-              <option value="dara_agent">DARA Agents</option>
+              <option value="dara_agent">Authorities Agents</option>
               <option value="system_admin">System Admin</option>
             </select>
           </div>
@@ -160,7 +161,7 @@ export default function UserManagementPage() {
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}
                       >
-                        {ROLE_LABELS[user.role] || user.role}
+                        {t("roles", user.role)}
                       </span>
                     </td>
                     <td className="px-6 py-4">

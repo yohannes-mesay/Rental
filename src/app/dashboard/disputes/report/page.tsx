@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { agreements } from "@/lib/dummy-data";
 import { VIOLATION_TYPES } from "@/lib/constants";
 import { ArrowLeft, Upload, Plus } from "lucide-react";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function ReportViolationPage() {
+  const { t } = useLanguage();
   const router = useRouter();
 
   const activeAgreements = agreements.filter((a) => a.status === "active");
@@ -19,7 +21,7 @@ export default function ReportViolationPage() {
 
   return (
     <>
-      <Header title="Report Violation" />
+      <Header title={t("disputes", "reportTitle")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/disputes"

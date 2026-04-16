@@ -54,6 +54,6 @@ export const ROLE_LABELS: Record<string, string> = {
   tenant: 'Tenant',
   landlord: 'Landlord',
   admin: 'Government Administrator',
-  dara_agent: 'DARA Agent',
+  dara_agent: 'Authorities Agent',
   system_admin: 'System Administrator',
 };

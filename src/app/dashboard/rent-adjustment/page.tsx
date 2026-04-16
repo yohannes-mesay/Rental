@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { rentAdjustments } from "@/lib/dummy-data";
 import { formatCurrency, formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -15,43 +17,52 @@ import {
 import { useState } from "react";
 
 export default function RentAdjustmentPage() {
+  const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState("all");
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
+  const userId = user?.id || "";
 
-  const filtered = rentAdjustments.filter(
+  const roleBasedList =
+    role === "landlord"
+      ? rentAdjustments.filter((r) => r.landlordId === userId)
+      : rentAdjustments;
+
+  const filtered = roleBasedList.filter(
     (r) => statusFilter === "all" || r.status === statusFilter
   );
 
   return (
     <>
-      <Header title="Rent Adjustments" />
+      <Header title={t("rentAdj", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
-        {/* Stats */}
+        {/* Stats - role-based counts */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[
             {
-              label: "Total Requests",
-              value: rentAdjustments.length,
+              label: t("rentAdj", "totalRequests"),
+              value: roleBasedList.length,
               icon: TrendingUp,
               color: "text-slate-900",
             },
             {
-              label: "Approved",
-              value: rentAdjustments.filter((r) => r.status === "approved")
+              label: t("rentAdj", "approved"),
+              value: roleBasedList.filter((r) => r.status === "approved")
                 .length,
               icon: CheckCircle2,
               color: "text-emerald-600",
             },
             {
-              label: "Pending / Review",
-              value: rentAdjustments.filter((r) =>
+              label: t("rentAdj", "pendingReview"),
+              value: roleBasedList.filter((r) =>
                 ["pending", "under_review"].includes(r.status)
               ).length,
               icon: Clock,
               color: "text-amber-600",
             },
             {
-              label: "Rejected",
-              value: rentAdjustments.filter((r) => r.status === "rejected")
+              label: t("rentAdj", "rejected"),
+              value: roleBasedList.filter((r) => r.status === "rejected")
                 .length,
               icon: XCircle,
               color: "text-red-600",
@@ -174,15 +185,24 @@ export default function RentAdjustmentPage() {
                   )}
                 </div>
 
-                {/* Actions for pending/under_review */}
-                {["pending", "under_review"].includes(adj.status) && (
+                {/* Authorities only: Approve/Reject */}
+                {["pending", "under_review"].includes(adj.status) && role === "dara_agent" && (
                   <div className="flex flex-col gap-2 shrink-0">
                     <button className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
-                      Approve
+                      {t("rentAdj", "approve")}
                     </button>
                     <button className="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                      Reject
+                      {t("rentAdj", "reject")}
                     </button>
+                  </div>
+                )}
+                {/* Landlord sees status badge for pending items */}
+                {["pending", "under_review"].includes(adj.status) && role === "landlord" && (
+                  <div className="shrink-0 flex items-center">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs font-medium text-amber-700">
+                      <Clock className="w-3.5 h-3.5" />
+                      Awaiting Authorities Review
+                    </span>
                   </div>
                 )}
               </div>

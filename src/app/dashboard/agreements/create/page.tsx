@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { properties } from "@/lib/dummy-data";
 import { formatCurrency } from "@/lib/utils";
 import { MAX_ADVANCE_MONTHS, MIN_LEASE_YEARS } from "@/lib/constants";
@@ -14,6 +15,7 @@ const availableProperties = properties.filter((p) =>
 );
 
 export default function CreateAgreementPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [selectedProperty, setSelectedProperty] = useState("");
   const [monthlyRent, setMonthlyRent] = useState("");
@@ -43,7 +45,7 @@ export default function CreateAgreementPage() {
 
   return (
     <>
-      <Header title="Create Tenancy Agreement" />
+      <Header title={t("agreements", "createTitle")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/agreements"

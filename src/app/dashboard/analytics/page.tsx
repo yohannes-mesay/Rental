@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { analyticsData } from "@/lib/dummy-data";
 import { formatCurrency } from "@/lib/utils";
 import {
@@ -34,6 +35,7 @@ const COLORS = [
 ];
 
 export default function AnalyticsPage() {
+  const { t } = useLanguage();
   const totalProperties = analyticsData.propertyDistribution.reduce(
     (sum, d) => sum + d.count,
     0
@@ -48,16 +50,16 @@ export default function AnalyticsPage() {
 
   return (
     <>
-      <Header title="Rental Market Analytics" />
+      <Header title={t("analyticsPage", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             {
-              label: "Registered Properties",
+              label: t("analyticsPage", "registeredProperties"),
               value: totalProperties.toLocaleString(),
             },
-            { label: "Avg. Occupancy Rate", value: `${avgOccupancy.toFixed(1)}%` },
+            { label: t("analyticsPage", "avgOccupancy"), value: `${avgOccupancy.toFixed(1)}%` },
             {
               label: "Avg. Monthly Rent",
               value: formatCurrency(
@@ -66,7 +68,7 @@ export default function AnalyticsPage() {
                 ].averageRent
               ),
             },
-            { label: "Total Disputes", value: totalDisputes.toString() },
+            { label: t("analyticsPage", "totalDisputes"), value: totalDisputes.toString() },
           ].map((stat) => (
             <div
               key={stat.label}

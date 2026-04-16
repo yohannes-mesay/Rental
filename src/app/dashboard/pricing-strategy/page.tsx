@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { pricingStrategies } from "@/lib/dummy-data";
 import { formatDate, formatCurrency, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -16,11 +17,12 @@ import {
 import { useState } from "react";
 
 export default function PricingStrategyPage() {
+  const { t } = useLanguage();
   const [expandedId, setExpandedId] = useState<string | null>("ps1");
 
   return (
     <>
-      <Header title="Pricing Strategy" />
+      <Header title={t("pricing", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Info */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">

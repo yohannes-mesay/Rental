@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
 import { properties, agreements } from "@/lib/dummy-data";
 import { formatCurrency, formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -17,6 +18,7 @@ import { useState } from "react";
 type Tab = "properties" | "agreements";
 
 export default function VerificationsPage() {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<Tab>("properties");
 
   const pendingProperties = properties.filter(
@@ -28,7 +30,7 @@ export default function VerificationsPage() {
 
   return (
     <>
-      <Header title="Document Verification" />
+      <Header title={t("admin", "verificationTitle")} />
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

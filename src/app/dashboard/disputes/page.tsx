@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { disputes } from "@/lib/dummy-data";
 import { formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import { VIOLATION_TYPES } from "@/lib/constants";
@@ -17,10 +19,19 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function DisputesPage() {
+  const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
+  const userId = user?.id || "";
 
-  const filtered = disputes.filter((d) => {
+  const roleBasedList =
+    role === "admin" || role === "dara_agent" || role === "system_admin"
+      ? disputes
+      : disputes.filter((d) => d.reporterId === userId || d.respondentId === userId);
+
+  const filtered = roleBasedList.filter((d) => {
     const matchesStatus = statusFilter === "all" || d.status === statusFilter;
     const matchesSearch =
       searchQuery === "" ||
@@ -48,31 +59,31 @@ export default function DisputesPage() {
 
   return (
     <>
-      <Header title="Disputes & Violations" />
+      <Header title={t("disputes", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
-        {/* Stats row */}
+        {/* Stats row - role-based counts */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           {[
             {
-              label: "Total Cases",
-              value: disputes.length,
+              label: t("disputes", "totalCases"),
+              value: roleBasedList.length,
               color: "text-slate-900",
             },
             {
-              label: "Open",
-              value: disputes.filter(
+              label: t("disputes", "open"),
+              value: roleBasedList.filter(
                 (d) => !["resolved", "closed"].includes(d.status)
               ).length,
               color: "text-blue-600",
             },
             {
-              label: "Critical",
-              value: disputes.filter((d) => d.priority === "critical").length,
+              label: t("disputes", "critical"),
+              value: roleBasedList.filter((d) => d.priority === "critical").length,
               color: "text-red-600",
             },
             {
-              label: "Resolved",
-              value: disputes.filter((d) => d.status === "resolved").length,
+              label: t("disputes", "resolved"),
+              value: roleBasedList.filter((d) => d.status === "resolved").length,
               color: "text-emerald-600",
             },
           ].map((stat) => (
@@ -123,7 +134,7 @@ export default function DisputesPage() {
             className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Report Violation
+            {t("disputes", "reportViolation")}
           </Link>
         </div>
 

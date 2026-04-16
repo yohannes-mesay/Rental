@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { agreements } from "@/lib/dummy-data";
 import { formatCurrency, formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import {
@@ -15,10 +17,21 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function AgreementsPage() {
+  const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
+  const userId = user?.id || "";
 
-  const filtered = agreements.filter((a) => {
+  const roleBasedList =
+    role === "landlord"
+      ? agreements.filter((a) => a.landlordId === userId)
+      : role === "tenant"
+        ? agreements.filter((a) => a.tenantId === userId)
+        : agreements;
+
+  const filtered = roleBasedList.filter((a) => {
     const matchesStatus = statusFilter === "all" || a.status === statusFilter;
     const matchesSearch =
       searchQuery === "" ||
@@ -28,9 +41,11 @@ export default function AgreementsPage() {
     return matchesStatus && matchesSearch;
   });
 
+  const showNewAgreementButton = role === "landlord" || role === "tenant";
+
   return (
     <>
-      <Header title="Tenancy Agreements" />
+      <Header title={t("agreements", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3 flex-1 w-full sm:w-auto">
@@ -60,13 +75,15 @@ export default function AgreementsPage() {
               </select>
             </div>
           </div>
-          <Link
-            href="/dashboard/agreements/create"
-            className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Agreement
-          </Link>
+          {showNewAgreementButton && (
+            <Link
+              href="/dashboard/agreements/create"
+              className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              {t("agreements", "newAgreement")}
+            </Link>
+          )}
         </div>
 
         {/* Agreements Table */}

@@ -45,6 +45,8 @@ export function getStatusColor(status: string): string {
     escalated: 'bg-red-100 text-red-800',
     rented: 'bg-indigo-100 text-indigo-800',
     archived: 'bg-gray-100 text-gray-600',
+    paid: 'bg-emerald-100 text-emerald-800',
+    overdue: 'bg-red-100 text-red-800',
   };
   return colors[status] || 'bg-gray-100 text-gray-800';
 }

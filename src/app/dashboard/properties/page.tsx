@@ -1,7 +1,9 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
-import { properties } from "@/lib/dummy-data";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
+import { properties, agreements } from "@/lib/dummy-data";
 import { formatCurrency, getStatusColor, formatStatus } from "@/lib/utils";
 import {
   Building2,
@@ -17,10 +19,24 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function PropertiesPage() {
+  const { t } = useLanguage();
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
+  const userId = user?.id || "";
 
-  const filtered = properties.filter((p) => {
+  const roleBasedList =
+    role === "landlord"
+      ? properties.filter((p) => p.landlordId === userId)
+      : role === "tenant"
+        ? (() => {
+            const myRentedIds = agreements.filter((a) => a.tenantId === userId).map((a) => a.propertyId);
+            return properties.filter((p) => p.status === "available" || myRentedIds.includes(p.id));
+          })()
+        : properties;
+
+  const filtered = roleBasedList.filter((p) => {
     const matchesStatus = statusFilter === "all" || p.status === statusFilter;
     const matchesSearch =
       searchQuery === "" ||
@@ -30,9 +46,11 @@ export default function PropertiesPage() {
     return matchesStatus && matchesSearch;
   });
 
+  const showRegisterButton = role === "landlord";
+
   return (
     <>
-      <Header title="Properties" />
+      <Header title={t("properties", "title")} />
       <main className="flex-1 p-6 overflow-y-auto">
         {/* Actions bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -41,7 +59,7 @@ export default function PropertiesPage() {
               <Search className="w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search properties..."
+                placeholder={t("properties", "searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent text-sm outline-none flex-1"
@@ -54,22 +72,24 @@ export default function PropertiesPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white outline-none"
               >
-                <option value="all">All Status</option>
-                <option value="available">Available</option>
-                <option value="rented">Rented</option>
-                <option value="verified">Verified</option>
-                <option value="pending_verification">Pending</option>
-                <option value="rejected">Rejected</option>
+                <option value="all">{t("properties", "allStatus")}</option>
+                <option value="available">{t("properties", "available")}</option>
+                <option value="rented">{t("properties", "rented")}</option>
+                <option value="verified">{t("properties", "verified")}</option>
+                <option value="pending_verification">{t("properties", "pending")}</option>
+                <option value="rejected">{t("properties", "rejected")}</option>
               </select>
             </div>
           </div>
-          <Link
-            href="/dashboard/properties/register"
-            className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Register Property
-          </Link>
+          {showRegisterButton && (
+            <Link
+              href="/dashboard/properties/register"
+              className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              {t("properties", "registerProperty")}
+            </Link>
+          )}
         </div>
 
         {/* Properties Grid */}
@@ -130,7 +150,7 @@ export default function PropertiesPage() {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">No properties found</p>
+            <p className="text-slate-500">{t("properties", "noProperties")}</p>
           </div>
         )}
       </main>

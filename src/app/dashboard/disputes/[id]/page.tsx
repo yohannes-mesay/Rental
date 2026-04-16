@@ -1,6 +1,8 @@
 "use client";
 
 import { Header } from "@/components/dashboard/header";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { disputes } from "@/lib/dummy-data";
 import { formatDate, getStatusColor, formatStatus } from "@/lib/utils";
 import { VIOLATION_TYPES } from "@/lib/constants";
@@ -18,6 +20,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function DisputeDetailPage() {
+  const { t } = useLanguage();
+  const { user } = useAuth();
+  const role = user?.role || "tenant";
   const params = useParams();
   const dispute = disputes.find((d) => d.id === params.id);
 
@@ -37,7 +42,7 @@ export default function DisputeDetailPage() {
 
   return (
     <>
-      <Header title="Dispute Details" />
+        <Header title={t("disputes", "disputeDetails")} />
       <main className="flex-1 p-6 overflow-y-auto">
         <Link
           href="/dashboard/disputes"
@@ -148,8 +153,8 @@ export default function DisputeDetailPage() {
               )}
             </div>
 
-            {/* Response / Mediation area */}
-            {!dispute.resolution && (
+            {/* Authorities only: Response / Resolution actions */}
+            {!dispute.resolution && role === "dara_agent" && (
               <div className="bg-white rounded-xl border border-slate-200 p-6">
                 <h3 className="text-sm font-semibold text-slate-900 mb-4">
                   <MessageSquare className="w-4 h-4 inline mr-1.5" />
@@ -170,6 +175,19 @@ export default function DisputeDetailPage() {
                   <button className="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
                     Escalate
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* Tenant/Landlord: status info when unresolved */}
+            {!dispute.resolution && (role === "tenant" || role === "landlord") && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">Under Review</p>
+                    <p className="text-xs text-amber-600 mt-1">This dispute is being reviewed by the Authorities. You will be notified once a resolution is reached.</p>
+                  </div>
                 </div>
               </div>
             )}

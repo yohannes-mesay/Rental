@@ -149,6 +149,78 @@ export interface Notification {
   link?: string;
 }
 
+export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'partial';
+
+export interface RentPayment {
+  id: string;
+  agreementId: string;
+  propertyTitle: string;
+  payerId: string;
+  payerName: string;
+  recipientId: string;
+  recipientName: string;
+  amount: number;
+  dueDate: string;
+  paidDate?: string;
+  status: PaymentStatus;
+  method?: 'cbe_birr' | 'telebirr' | 'bank_transfer' | 'mobile_money' | 'cash' | 'check';
+  reference?: string;
+}
+
+export interface SupportingDocument {
+  id: string;
+  uploaderId: string;
+  uploaderName: string;
+  relatedEntityType: 'agreement' | 'dispute' | 'property' | 'rent_adjustment';
+  relatedEntityId: string;
+  relatedEntityTitle: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  uploadedAt: string;
+  description?: string;
+}
+
+export interface AuditLog {
+  id: string;
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  action: string;
+  entity: string;
+  entityId: string;
+  details: string;
+  ipAddress: string;
+  timestamp: string;
+}
+
+export interface PenaltyNotice {
+  id: string;
+  issuedTo: string;
+  issuedToName: string;
+  issuedBy: string;
+  issuedByName: string;
+  disputeId?: string;
+  agreementId?: string;
+  type: 'warning' | 'fine' | 'suspension' | 'legal_action';
+  reason: string;
+  amount?: number;
+  status: 'issued' | 'acknowledged' | 'appealed' | 'enforced' | 'cancelled';
+  issuedAt: string;
+  deadline?: string;
+}
+
+export interface SystemParameter {
+  id: string;
+  key: string;
+  label: string;
+  value: string;
+  category: 'rental' | 'compliance' | 'system' | 'notification';
+  description: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
 export interface DashboardStats {
   totalProperties: number;
   activeAgreements: number;
